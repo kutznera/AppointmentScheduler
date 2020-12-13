@@ -1,5 +1,6 @@
 const { Appointment, Slot } = Model;
 const Nexmo = require("nexmo");
+
 const appointmentController = {
   all(req, res) {
     // Returns all appointments
@@ -7,6 +8,7 @@ const appointmentController = {
   },
   create(req, res) {
     var requestBody = req.body;
+
     var newslot = new Slot({
       slot_time: requestBody.slot_time,
       slot_date: requestBody.slot_date,
@@ -20,16 +22,19 @@ const appointmentController = {
       phone: requestBody.phone,
       slots: newslot._id
     });
+
     const nexmo = new Nexmo({
-      apiKey: "eeb3c87a",
+      apiKey: "Yeeb3c87a",
       apiSecret: "e3yBBOoq48jh69bj"
     });
+
     let msg =
       requestBody.name +
       " " +
       "this message is to confirm your appointment at" +
       " " +
       requestBody.appointment;
+
     // and saves the record to
     // the data base
     newappointment.save((err, saved) => {
@@ -38,8 +43,10 @@ const appointmentController = {
       Appointment.find({ _id: saved._id })
         .populate("slots")
         .exec((err, appointment) => res.json(appointment));
+
       const from = VIRTUAL_NUMBER;
       const to = RECIPIENT_NUMBER;
+
       nexmo.message.sendSms(from, to, msg, (err, responseData) => {
         if (err) {
           console.log(err);
@@ -50,4 +57,5 @@ const appointmentController = {
     });
   }
 };
+
 module.exports = appointmentController;
